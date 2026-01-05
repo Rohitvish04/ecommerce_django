@@ -131,3 +131,9 @@ if WHITENOISE:
         STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     except ImportError:
         pass
+
+csrf_env = os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '')
+if csrf_env:
+    CSRF_TRUSTED_ORIGINS = [x.strip() for x in csrf_env.split(',') if x.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if h and '.' in h]
