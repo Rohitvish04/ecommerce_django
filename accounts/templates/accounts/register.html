@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'ecommerce/css/auth.css' %}">
+{% endblock %}
+
+{% block title %}Register - Eye Shopping{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 20px;">
+    <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 500px;">
+        <h2 style="text-align: center; color: #8e44ad; margin-bottom: 30px; font-weight: 600;">Create Account</h2>
+        
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div style="background: #fee; color: #c0392b; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9rem;">
+                    <p style="margin: 0; font-weight: 600;">Please correct the errors below:</p>
+                    <ul style="margin: 5px 0 0 20px;">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">{{ field.label }}</label>
+                    <div class="input-wrapper">
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                        <small style="color: #999; display: block; margin-top: 5px; font-size: 0.8rem;">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn" style="width: 100%; padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 1rem;">Sign Up</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; color: #777; font-size: 0.9rem;">
+            Already have an account? <a href="{% url 'login' %}" style="color: #8e44ad; font-weight: 600;">Login</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

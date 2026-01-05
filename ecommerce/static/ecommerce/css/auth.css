@@ -1,0 +1,22 @@
+/* Auth Pages (Login & Register) */
+input:focus, .input-wrapper input:focus {
+    border-color: #8e44ad !important;
+    outline: none;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.helptext { 
+    display: block; 
+    margin-top: 5px; 
+    color: #999; 
+    font-size: 0.8rem; 
+}

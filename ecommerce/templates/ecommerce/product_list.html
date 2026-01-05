@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eye Shopping - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'ecommerce/css/product_list.css' %}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            Eye Shopping
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'product_list' %}">Home</a></li>
+                <li><a href="#categories">Category</a></li>
+                <li><a href="#products">Products</a></li>
+            </ul>
+        </nav>
+        <div class="header-icons">
+            <!-- Search Form -->
+            <form action="{% url 'product_list' %}" method="get" style="display: flex; align-items: center; background: #eee; padding: 5px 15px; border-radius: 20px;">
+                <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q|default:'' }}" style="border: none; background: transparent; outline: none; width: 150px;">
+                <button type="submit" style="border: none; background: transparent; cursor: pointer;"><i class="fas fa-search"></i></button>
+            </form>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'order_history' %}" title="My Orders" style="margin-right: 10px;"><i class="fas fa-clipboard-list"></i></a>
+                <a href="{% url 'home' %}"><i class="fas fa-user"></i></a>
+                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">{% csrf_token %}</form>
+                <i class="fas fa-sign-out-alt" onclick="document.getElementById('logout-form').submit()" title="Logout"></i>
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-user"></i></a>
+            {% endif %}
+            <div style="position: relative;">
+                <a href="{% url 'cart_detail' %}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge">{{ cart|length }}</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-subtitle">Mouse</span>
+            <h1 class="hero-title">Rog Karis <span>Wireless</span><br>Made for Pros</h1>
+            <p class="hero-desc">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mattis a egestas magna ornare quis consectetur dolor. Ipsum, vel venenatis viverra maecenas lorem diam non idea.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn-primary">Shop Now</button>
+                <button class="btn-outline">Next</button>
+            </div>
+        </div>
+        
+        <div class="hero-image">
+            <div class="circle-bg c1"></div>
+            <div class="circle-bg c2"></div>
+            <!-- Placeholder for the Mouse Image -->
+            <img src="https://images.unsplash.com/photo-1707592691247-5c3a1c7ba0e3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Rog Karis Wireless Mouse">
+            
+            <!-- Decorative dots (static for visual) -->
+            <div class="feature-dot" style="top: 20%; right: 20%;"></div>
+            <div class="feature-dot" style="bottom: 30%; left: 10%;"></div>
+        </div>
+    </section>
+
+    <!-- Shop By Category -->
+    <section class="categories-section" id="categories">
+        <div class="section-header">
+            <h2 class="section-title">Shop By Category</h2>
+            <div class="nav-arrows">
+                <i class="fas fa-chevron-left"></i>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="category-grid">
+            <!-- Dynamic Categories -->
+            <a href="{% url 'product_list' %}" class="category-card">
+                <div class="category-icon"><i class="fas fa-th-large"></i></div>
+                <div class="category-name">All Products</div>
+            </a>
+            
+            {% for cat in categories %}
+            <a href="?category={{ cat.slug }}" class="category-card{% if current_category == cat.slug %} active{% endif %}">
+                <!-- Using generic icons for now based on name, or random -->
+                <div class="category-icon">
+                    {% with cat_name=cat.name|lower %}
+                        {% if "laptop" in cat_name %}
+                            <i class="fas fa-laptop"></i>
+                        {% elif "watch" in cat_name %}
+                            <i class="fas fa-clock"></i>
+                        {% elif "camera" in cat_name %}
+                            <i class="fas fa-camera"></i>
+                        {% elif "mobile" in cat_name %}
+                            <i class="fas fa-mobile-alt"></i>
+                        {% elif "monitor" in cat_name %}
+                            <i class="fas fa-desktop"></i>
+                        {% else %}
+                            <i class="fas fa-tag"></i>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="category-name">{{ cat.name }}</div>
+            </a>
+            {% empty %}
+                <!-- Static Fallback if no categories in DB yet to show the UI -->
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-laptop"></i></div>
+                    <div class="category-name">PC & Laptop</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-clock"></i></div>
+                    <div class="category-name">Smartwatch</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-camera"></i></div>
+                    <div class="category-name">Camera</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="category-name">Mobile & Tab</div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Product Grid (Existing Logic with New Style) -->
+    <section class="products-section" id="products">
+        <div class="section-header">
+            <h2 class="section-title">
+                {% if current_category %}
+                    {{ current_category|title }}
+                {% else %}
+                    New Arrivals
+                {% endif %}
+            </h2>
+            <!-- Filters Toggle or Sidebar (Simple version for now) -->
+            <form method="get" style="display: flex; gap: 10px; align-items: center;">
+                {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+                {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+                
+                <input type="number" name="min_price" placeholder="Min $" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 80px;" value="{{ request.GET.min_price }}">
+                <input type="number" name="max_price" placeholder="Max $" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 80px;" value="{{ request.GET.max_price }}">
+                <input type="text" name="brand" placeholder="Brand" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 100px;" value="{{ request.GET.brand }}">
+                <button type="submit" class="btn-primary" style="padding: 8px 15px;">Filter</button>
+            </form>
+        </div>
+        
+        <div class="category-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+            {% for product in products %}
+                <div class="product-card-item">
+                    {% if product.image_url %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div style="height: 150px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #ccc; border-radius: 8px; margin-bottom: 15px;">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    {% endif %}
+                    <h3 style="font-size: 1.1rem; margin-bottom: 5px;">{{ product.name }}</h3>
+                    {% if product.brand %}
+                        <small style="color: #777; display: block; margin-bottom: 5px;">{{ product.brand }}</small>
+                    {% endif %}
+                    <p style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px;">${{ product.price }}</p>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{% url 'product_detail' product.pk %}" class="btn-primary" style="flex: 1; text-align: center; font-size: 0.9rem;">View</a>
+                        <a href="{% url 'cart_add' product.pk %}" class="btn-outline" style="padding: 10px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-cart-plus"></i></a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No products found matching your criteria.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+</body>
+</html>

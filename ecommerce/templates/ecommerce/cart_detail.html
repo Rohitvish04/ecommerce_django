@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Eye Shopping</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'ecommerce/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'ecommerce/css/cart.css' %}">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            Eye Shopping
+        </div>
+        <a href="{% url 'product_list' %}" style="font-weight: 500;">&larr; Continue Shopping</a>
+    </header>
+
+    <div class="container">
+        <h1 class="cart-title">Your Shopping Cart</h1>
+
+        {% if cart|length > 0 %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                    <tr>
+                        <td>
+                            <div class="product-info">
+                                {% if item.product.image_url %}
+                                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                                {% else %}
+                                    <div style="width: 60px; height: 60px; background: #eee; border-radius: 5px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-image"></i></div>
+                                {% endif %}
+                                <div>
+                                    <h4 style="font-size: 1rem;">{{ item.product.name }}</h4>
+                                    {% if item.product.brand %}<small style="color: #777;">{{ item.product.brand }}</small>{% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>${{ item.price }}</td>
+                        <td>
+                            <form action="{% url 'cart_add' item.product.id %}" method="post" style="display:inline-block;">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 50px; padding: 5px;">
+                                <input type="hidden" name="update" value="True">
+                                <button type="submit" class="btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">Update</button>
+                            </form>
+                        </td>
+                        <td>${{ item.total_price }}</td>
+                        <td>
+                            <a href="{% url 'cart_remove' item.product.id %}" class="btn-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>${{ cart.get_total_price }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (Estimated)</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>${{ cart.get_total_price }}</span>
+                </div>
+                <a href="{% url 'order_create' %}" class="btn-primary" style="display: block; text-align: center; width: 100%; margin-top: 20px;">Proceed to Checkout</a>
+            </div>
+
+        {% else %}
+            <div style="text-align: center; padding: 50px;">
+                <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                <h2>Your cart is empty</h2>
+                <p style="color: #777; margin-bottom: 20px;">Looks like you haven't added anything to your cart yet.</p>
+                <a href="{% url 'product_list' %}" class="btn-primary">Start Shopping</a>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

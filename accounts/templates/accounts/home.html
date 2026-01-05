@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .account-wrap {padding: 60px 20px; display: flex; justify-content: center; align-items: center;}
+  .account-card {width: 100%; max-width: 900px; background: #ffffff; border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.08); overflow: hidden;}
+  .account-header {display: flex; align-items: center; gap: 16px; padding: 28px 32px; background: linear-gradient(135deg,#8e44ad 0%,#6d24a3 100%); color: #fff;}
+  .avatar {width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 20px; background: rgba(255,255,255,0.18); backdrop-filter: blur(2px);}
+  .account-header h1 {margin: 0; font-size: 22px; font-weight: 600;}
+  .account-header p {margin: 2px 0 0; opacity: 0.9;}
+  .actions {padding: 24px 32px;}
+  .action-grid {display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 18px;}
+  .action-item {border: 1px solid #eee; border-radius: 12px; padding: 18px; background: #fafafa; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; text-decoration: none; color: #333; display: block;}
+  .action-item:hover {transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); background: #f7f5ff;}
+  .action-title {font-weight: 600; margin-bottom: 6px;}
+  .action-sub {color: #666; font-size: 14px;}
+  .logout {padding: 0 32px 28px;}
+  .logout button {background: none; border: none; color: #8e44ad; cursor: pointer; padding: 8px 0; font-weight: 600;}
+</style>
+<div class="account-wrap">
+  <div class="account-card">
+    <div class="account-header">
+      <div class="avatar">{{ request.user.username|slice:":1"|upper }}</div>
+      <div>
+        <h1>Welcome, {{ request.user.username }}!</h1>
+        <p>You are now logged in.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="action-grid">
+        <a class="action-item" href="{% url 'profile' %}">
+          <div class="action-title">Add or Update Profile</div>
+          <div class="action-sub">Edit your name, email, phone, and address</div>
+        </a>
+        <a class="action-item" href="{% url 'order_history' %}">
+          <div class="action-title">My Orders</div>
+          <div class="action-sub">View recent and past orders with details</div>
+        </a>
+        <a class="action-item" href="{% url 'product_list' %}">
+          <div class="action-title">Go to Shop</div>
+          <div class="action-sub">Browse products, search, filter, and add to cart</div>
+        </a>
+      </div>
+    </div>
+    <div class="logout">
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

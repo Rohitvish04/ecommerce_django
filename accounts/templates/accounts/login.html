@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'ecommerce/css/auth.css' %}">
+{% endblock %}
+
+{% block title %}Login - Eye Shopping{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 20px;">
+    <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px;">
+        <h2 style="text-align: center; color: #8e44ad; margin-bottom: 30px; font-weight: 600;">Welcome Back</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div style="background: #fee; color: #c0392b; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9rem;">
+                    <p style="margin: 0;">Invalid username or password.</p>
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s;"
+                           placeholder="Enter your {{ field.label|lower }}">
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn" style="width: 100%; padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 1rem;">Login</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; color: #777; font-size: 0.9rem;">
+            Don't have an account? <a href="{% url 'register' %}" style="color: #8e44ad; font-weight: 600;">Register</a>
+            <br><br>
+            <a href="{% url 'password_reset' %}" style="color: #999; font-size: 0.85rem;">Forgot Password?</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

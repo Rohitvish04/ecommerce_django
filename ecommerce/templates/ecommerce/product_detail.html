@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }} - Ecommerce Store</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #555; }
+        .product-detail { display: flex; gap: 40px; max-width: 900px; margin: 0 auto; }
+        .image-container { flex: 1; position: relative; overflow: hidden; border-radius: 8px; border: 1px solid #eee; }
+        .image-container img { width: 100%; height: auto; display: block; transition: transform 0.3s ease; transform-origin: center center; cursor: zoom-in; }
+        .image-container:hover img { transform: scale(1.5); }
+        .info-container { flex: 1; }
+        h1 { margin-top: 0; }
+        .price { font-size: 1.5em; color: #28a745; font-weight: bold; margin: 10px 0; }
+        .stock { color: #666; margin-bottom: 20px; }
+        .stock.in-stock { color: #28a745; }
+        .stock.out-of-stock { color: #dc3545; }
+        .description { line-height: 1.6; color: #444; margin-bottom: 30px; }
+        .btn { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; border: none; font-size: 1rem; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .zoom-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <a href="{% url 'product_list' %}" class="back-link">&larr; Back to Products</a>
+
+    <div class="product-detail">
+        <div class="image-container" id="img-container">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" id="product-img">
+                <div class="zoom-hint">Hover to Zoom</div>
+            {% else %}
+                <div style="height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #888;">No Image Available</div>
+            {% endif %}
+        </div>
+        
+        <div class="info-container">
+            <h1>{{ product.name }}</h1>
+            <p class="price">${{ product.price }}</p>
+            
+            <p class="stock {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                {% if product.stock > 0 %}
+                    In Stock ({{ product.stock }} available)
+                {% else %}
+                    Out of Stock
+                {% endif %}
+            </p>
+
+            <div class="description">
+                {{ product.description|linebreaks }}
+            </div>
+
+            {% if product.stock > 0 %}
+                <a class="btn" href="{% url 'cart_add' product.pk %}">Add to Cart</a>
+            {% else %}
+                <button class="btn" style="background: #ccc; cursor: not-allowed;" disabled>Out of Stock</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('img-container');
+        const img = document.getElementById('product-img');
+
+        if (container && img) {
+            container.addEventListener('mousemove', function(e) {
+                const { left, top, width, height } = container.getBoundingClientRect();
+                const x = (e.clientX - left) / width * 100;
+                const y = (e.clientY - top) / height * 100;
+                
+                img.style.transformOrigin = `${x}% ${y}%`;
+            });
+        }
+    </script>
+</body>
+</html>

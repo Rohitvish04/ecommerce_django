@@ -1,0 +1,13 @@
+/* Checkout Page */
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+}
+
+.form-group input:focus {
+    border-color: #8e44ad;
+    outline: none;
+}
