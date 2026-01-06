@@ -137,3 +137,6 @@ if csrf_env:
     CSRF_TRUSTED_ORIGINS = [x.strip() for x in csrf_env.split(',') if x.strip()]
 else:
     CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if h and '.' in h]
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
